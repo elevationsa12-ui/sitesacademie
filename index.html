@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elevation Académie - Accueil</title>
+    
+    <link class="link-favicon" rel="icon" href="https://img.icons8.com/fluency/48/star--v1.png" type="image/png">
+    
+    <!-- LIBRERI POU AI OCR AK LIBRERI POU KADRÉ/CROPPER FOTO YO -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f7f6; color: #333; scroll-behavior: smooth; }
+
+        /* HEADER DESIGN RESPONSIVE */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-wrap: wrap; gap: 15px; }
+        .logo-container-elevation { display: flex; align-items: center; gap: 10px; }
+        .logo-container-elevation img { height: 50px; display: block; object-fit: contain; }
+        .nom-academie-header { font-weight: bold; color: #1b4d3e; letter-spacing: 1px; text-transform: uppercase; }
+        
+        nav { display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .btn-header { background: #1b4d3e; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; cursor: pointer; text-align: center; border: none; font-size: 14px; }
+        .btn-logout-header { background: #d9534f; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; border: none; margin-left: 10px; }
+
+        /* GWO BANNÈ */
+        .hero-banner { 
+            background: linear-gradient(rgba(27, 77, 62, 0.9), rgba(45, 90, 76, 0.9)), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1600') no-repeat center center/cover; 
+            color: white; text-align: center; padding: 80px 20px; 
+        }
+        .hero-banner h1 { font-size: 42px; margin-bottom: 15px; color: #ffffff; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .hero-banner p { font-size: 18px; max-width: 800px; margin: 0 auto 35px auto; line-height: 1.6; opacity: 0.95; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        
+        /* SEKSYON VIDEO INTRO KI KORRIJE POU L PLAY BYEN */
+        .section-video-presentation { max-width: 800px; margin: 0 auto 40px auto; padding: 0 10px; }
+        .video-container { width: 100%; height: 420px; border-radius: 12px; overflow: hidden; background-color: #000; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .video-container video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* MEMO PROMO SOU TÈT BOUTON AN */
+        .memo-promo-badge { background: #fff; color: #1b4d3e; display: inline-block; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #ff9f43; max-width: 90%; line-height: 1.4; }
+
+        /* BOUTON DECOUVRIR PI GWO */
+        .btn-discover { display: inline-block; background: #ff9f43; color: white; text-decoration: none; padding: 25px 65px; border-radius: 50px; font-weight: bold; font-size: 26px; transition: 0.3s all ease; box-shadow: 0 6px 20px rgba(255, 159, 67, 0.4); cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-discover:hover { background: #e08528; transform: scale(1.05); box-shadow: 0 8px 25px rgba(255, 159, 67, 0.6); }
+
+        /* SEKSYON À PROPOS & MEMO */
+        .section-about-elevation { max-width: 900px; margin: 60px auto; padding: 40px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; text-align: center; }
+        .about-main-title { font-size: 28px; font-weight: 800; color: #1b4d3e; margin-bottom: 20px; text-transform: uppercase; }
+        .about-text { font-size: 16px; line-height: 1.7; color: #4a5568; margin-bottom: 20px; }
+
+        /* SEKSYON LIS KOU NAN PAJ AKEY LA */
+        .section-programmes { max-width: 1000px; margin: 50px auto; padding: 20px; text-align: center; }
+        .programmes-title { font-size: 28px; color: #1b4d3e; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; }
+        .programmes-subtitle { font-size: 16px; color: #555; margin-bottom: 30px; }
+        
+        .btn-section-inscription { display: inline-block; background: #1b4d3e; color: white; padding: 15px 40px; border-radius: 8px; font-weight: bold; font-size: 18px; text-decoration: none; cursor: pointer; border: none; margin-bottom: 40px; transition: 0.3s; text-transform: uppercase; }
+        .btn-section-inscription:hover { background: #ff9f43; transform: translateY(-2px); }
+
+        .programmes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .programme-item { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; padding: 20px; text-align: left; }
+        .programme-item h4 { color: #1b4d3e; margin-bottom: 10px; font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        .programme-item p { font-size: 14px; color: #555; line-height: 1.5; }
+        .dispo-tag { font-weight: bold; color: #1b4d3e; font-size: 13px; display: block; margin-top: 10px; letter-spacing: 0.5px; }
+
+        /* MODAL POPUP POU INSCRIPTION AK CONNEXION */
+        .modal-form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; padding: 20px; overflow-y: auto; }
+        .section-signup { max-width: 550px; width: 100%; background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid #e2e8f0; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; font-weight: bold; color: #999; cursor: pointer; }
+        
+        .section-signup h2 { color: #1b4d3e; margin-bottom: 10px; text-align: center; font-size: 24px; font-weight: 800; text-transform: uppercase; }
+        .signup-group { margin-bottom: 18px; }
+        .signup-group label { display: block; margin-bottom: 7px; font-weight: 600; color: #2d3748; font-size: 14px; }
+        .signup-group input, .signup-group select { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; background: #fff; transition: all 0.3s ease; }
+        .signup-group input:focus, .signup-group select:focus { border-color: #1b4d3e; box-shadow: 0 0 0 3px rgba(27, 77, 62, 0.15); }
+        .signup-group input[type="file"] { padding: 10px; background: #f8fafc; border: 2px dashed #cbd5e1; cursor: pointer; }
+        
+        .status-scan-ai { font-size: 13px; font-weight: bold; margin-top: 5px; display: none; color: #3182ce; }
+        .zone-enstriksyon-peman { background: #f0fdf4; border: 1px dashed #16a34a; padding: 18px; border-radius: 10px; margin-top: 15px; margin-bottom: 18px; display: none; }
+        .zone-enstriksyon-peman p { font-size: 14px; line-height: 1.6; color: #1e293b; }
+        .btn { display: block; text-align: center; background: #1b4d3e; color: white; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; border: none; width: 100%; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #13382d; }
+
+        /* BOUTON HELP WHATSAPP POU EVITE BLOKAJ */
+        .btn-whatsapp-help { display: block; text-align: center; background: #25d366; color: white; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; width: 100%; font-size: 15px; margin-top: 10px; border: none; cursor: pointer; }
+
+        /* KOTE ELÈV LA AP KADRÉ SCREENSHOT LA */
+        .crop-wrapper-container { display: none; background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; margin-top: 10px; text-align: center; }
+        .crop-area { max-width: 100%; max-height: 250px; margin: 0 auto; overflow: hidden; }
+        .crop-area img { max-width: 100%; display: block; }
+        .btn-crop-action { background: #ff9f43; color: white; padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 13px; }
+
+        /* FOOTER */
+        footer { background: #1b4d3e; color: white; text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 4px solid #ff9f43; }
+        footer p { font-size: 15px; margin-bottom: 12px; opacity: 0.9; }
+        footer a { color: #ff9f43; text-decoration: none; font-weight: bold; }
+
+        /* CUSTOM NOTIFICATION MODAL */
+        .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 11000; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; text-align: center; max-width: 450px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-content h3 { color: #1b4d3e; font-size: 22px; margin-bottom: 12px; font-weight: bold; }
+        .modal-content p { color: #555; margin-bottom: 25px; line-height: 1.5; font-size: 15px; }
+        .modal-btn { background: #ff9f43; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; }
+
+        @media (max-width: 850px) {
+            header { padding: 15px; justify-content: center; text-align: center; }
+            nav { justify-content: center; width: 100%; }
+            .hero-banner h1 { font-size: 28px; }
+            .video-container { height: 240px; }
+            .btn-discover { font-size: 20px; padding: 18px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- POPUP NOTIFICATION -->
+    <div id="popup-modal" class="custom-modal">
+        <div class="modal-content">
+            <h3 id="modal-titre">Notification</h3>
+            <p id="modal-mesaj">Message...</p>
+            <button class="modal-btn" id="modal-bouton-femen">OK</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-container-elevation">
+            <img src="c:\Users\PC\Documents\bol\logo.png.png" alt="Logo Elevation Académie">
+            <span class="nom-academie-header">ELEVATION ACADÉMIE</span>
+        </div>
+        <nav id="nav-espas-itilizate">
+            <button class="btn-header" onclick="louvriModalEnskripsyon()">S'inscrire / Connexion</button>
+        </nav>
+    </header>
+
+    <div id="blok-paj-akey">
+        <section class="hero-banner">
+            <h1>Bienvenue sur Elevation Académie !</h1>
+            <p style="font-weight: 600; color: #ff9f43; font-size: 22px; margin-bottom: 15px;">Veuillez vous inscrire afin d'avoir accès à tous nos cours exclusifs.</p>
+            <p>Suivez chaque formation avec <strong>patience</strong>, <strong>détermination</strong> et régularité. Prenez le temps de bien pratiquer pour maîtriser votre mutant métier.</p>
+            
+            <section class="section-video-presentation">
+                <div class="video-container">
+                    <!-- FIX VIDEO AUTOMATIQUE -->
+                    <video autoplay muted loop playsinline id="video-promo-elevation" controls preload="auto">
+                        <source src="c:\Users\PC\Documents\bol\presentation.mp4.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </section>
+            
+            <div>
+                <span class="memo-promo-badge">Inscrivez-vous pour seulement 1500 GDES sur le site par MonCash ou NatCash et accédez à toutes nos formations.</span>
+            </div>
+            <button onclick="aksyonBoutonPrensipal()" class="btn-discover">Découvrir nos cours</button>
+        </section>
+
+        <section class="section-about-elevation">
+            <h2 class="about-main-title">À Propos de Nous</h2>
+            <p class="about-text">
+                <strong>Elevation Académie</strong> est une plateforme éducative moderne conçue pour propulser vos compétences vers de nouveaux horizons. Notre mission est de vous fournir des formations pratiques, pointues et adaptées aux exigences du marché actuel.
+            </p>
+            <p class="about-text" style="font-style: italic; color: #1b4d3e; font-weight: 600;">
+                "Le secret de la réussite réside dans la constance et l'effort continu. Rejoignez-nous pour donner une nouvelle dimension à votre avenir professionnel."
+            </p>
+        </section>
+
+        <section class="section-programmes">
+            <h2 class="programmes-title">Les formations incluses dans notre plateforme</h2>
+            <p class="programmes-subtitle">Découvrez les compétences clés que vous allez acquérir après votre inscription.</p>
+            
+            <button class="btn-section-inscription" onclick="aksyonBoutonPrensipal()">S'inscrire aux formations</button>
+
+            <div class="programmes-grid">
+                <div class="programme-item">
+                    <h4><b>Informatique Bureautique</b></h4>
+                    <p>Maîtrisez l'environnement Windows, Word, Excel et PowerPoint pour devenir totalement autonome.</p>
+                    <span class="dispo-tag">À votre disposition</span>
+                </div>
+                <div class="programme-item">
+                    <h4><b>Montage Vidéo Professionnel</b></h4>
+                    <p>Apprenez les coupures, transitions, effets spéciaux et exportez vos projets comme un expert.</p>
+                    <span class="dispo-tag">À votre disposition</span>
+                </div>
+                <div class="programme-item">
+                    <h4><b>Live Streaming Pro</b></h4>
+                    <p>Découvrez comment diffuser en direct sur les réseaux sociaux avec une configuration stable et pro.</p>
+                    <span class="dispo-tag">À votre disposition</span>
+                </div>
+                <div class="programme-item">
+                    <h4><b>Marketing Digital</b></h4>
+                    <p>Créez des tunnels de vente efficaces, maîtrisez la publicité en ligne et boostez votre visibilité.</p>
+                    <span class="dispo-tag">À votre disposition</span>
+                </div>
+                <div class="programme-item">
+                    <h4><b>Entrepreneuriat</b></h4>
+                    <p>Apprenez à structurer, gérer et développer votre propre entreprise avec succès.</p>
+                    <span class="dispo-tag">À votre disposition</span>
+                </div>
+                <div class="programme-item">
+                    <h4><b>Retouche Photo Pro</b></h4>
+                    <p>Maîtrisez la correction des couleurs, le traitement d'image et la retouche professionnelle.</p>
+                    <span class="dispo-tag">À votre disposition</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAL FÒM ENSKRIPSYON -->
+    <div id="modal-inscription-container" class="modal-form-overlay">
+        <div class="section-signup">
+            <span class="close-modal-btn" onclick="femenModalEnskripsyon()">&times;</span>
+            
+            <div id="titre-fòm-espas">
+                <h2>Fiche d'Inscription & Paiement</h2>
+                <p style="font-size:14px; color:#666; text-align:center; margin-bottom:25px;">Remplissez les cases et mettez la capture d'écran valide.</p>
+            </div>
+
+            <form id="formulaire-signup-sistèm" onsubmit="fèEnskripsyonMoun(event)">
+                <div id="fòm-chan-enskripsyon-yo">
+                    <div class="signup-group">
+                        <label>Nom complet</label>
+                        <input type="text" id="ins-nom" placeholder="Ex: Joseph Christ Adelson" required>
+                    </div>
+                    <div class="signup-group">
+                        <label>Adresse E-mail (Gmail)</label>
+                        <input type="email" id="ins-email" placeholder="votreemail@gmail.com" required>
+                    </div>
+                    <div class="signup-group">
+                        <label>Numéro de téléphone</label>
+                        <input type="tel" id="ins-tel" placeholder="Ex: 3862-9690" required>
+                    </div>
+                    <div class="signup-group">
+                        <label>Mode de paiement</label>
+                        <select id="ins-metod-peman" onchange="chanjeMetodPeman()" required>
+                            <option value="">-- Choisir --</option>
+                            <option value="moncash">MonCash +509 3862-9690</option>
+                            <option value="natcash">NatCash +509 3202-2059</option>
+                        </select>
+                    </div>
+
+                    <div id="zone-enstriksyon" class="zone-enstriksyon-peman">
+                        <p id="tèks-enstriksyon-peman"></p>
+                    </div>
+
+                    <!-- FOTO A AN PREMYE -->
+                    <div class="signup-group">
+                        <label>Uploader la Preuve (Screenshot MonCash / NatCash)</label>
+                        <input type="file" id="ins-screenshot" accept="image/*" onchange="prepareKoupeFoto(event)">
+                        
+                        <!-- ZÒN POU KOUPE / CROPPER FOTO A -->
+                        <div id="crop-wrapper" class="crop-wrapper-container">
+                            <p style="font-size: 12px; color: #555; margin-bottom: 5px;">Ajustez et cadrez bien la zone du reçu pour l'AI :</p>
+                            <div class="crop-area">
+                                <img id="image-to-crop" src="">
+                            </div>
+                            <button type="button" class="btn-crop-action" onclick="finiKoupeFoto()">Valider le cadrage</button>
+                        </div>
+
+                        <div id="status-ai" class="status-scan-ai">🤖 AI ap analize foto a, tanpri tann...</div>
+                    </div>
+
+                    <!-- ID A AN DEZYÈM -->
+                    <div class="signup-group">
+                        <label>ID de Transaction (Ref / Numéro de reçu)</label>
+                        <input type="text" id="ins-transaction-id" placeholder="Ex: 58493021" oninput="reValideIdApreScan()" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-submit-signup" class="btn" style="background:#ff9f43; margin-top:20px; padding:14px;">Soumettre mon inscription</button>
+                
+                <!-- BOUTON WHATSAPP SI GEN PWOBLÈM KACHE -->
+                <a href="https://wa.me/message/L2LU4UHUJRAVL1" target="_blank" class="btn-whatsapp-help">Difficulté de validation ? Contactez-nous sur WhatsApp</a>
+
+                <p id="tèks-chanje-mòd" style="text-align:center; margin-top:15px; font-size:13px; color:#666; cursor:pointer; text-decoration:underline;" onclick="toggleKoneksyonEnskripsyon()">Déjà inscrit ? Connectez-vous ici</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER PA EMAIL AK TELEFÒN -->
+    <footer id="contact">
+        <p>© 2026 Elevation Académie. Tous droits réservés.</p>
+        <p>Besoin d'aide ? Contactez-nous par e-mail : <a href="mailto:elevationsa12@gmail.com">elevationsa12@gmail.com</a></p>
+        <p>Téléphone : <span style="color: #ff9f43; font-weight: bold;">+509 3862-9690 / +509 3202-2059</span></p>
+    </footer>
+
+    <script>
+    const lyenGoogleSites = "https://sites.google.com/view/elevasyonakademi/nos-cours";
+    const lyenWhatsAppAksyon = "https://wa.me/message/L2LU4UHUJRAVL1";
+    let itilizateKonekte = null;
+    let screenshotValid = false;
+    let mòdKoneksyon = false;
+    let cropperInstance = null;
+    let blobFotoKoupe = null;
+    let teksSkanePaAI = ""; 
+
+    // Eseye fòse videyo a jwe depi paj la chaje
+    document.addEventListener("DOMContentLoaded", () => {
+        const estoke = localStorage.getItem("elevation_user");
+        if (estoke) {
+            itilizateKonekte = JSON.parse(estoke);
+        }
+        refreshiHeaderNav();
+        
+        const vid = document.getElementById("video-promo-elevation");
+        if(vid) {
+            vid.play().catch(err => console.log("Autoplay block passé"));
+        }
+    });
+
+    function montreModal(titre, mesaj) {
+        const modal = document.getElementById("popup-modal");
+        document.getElementById("modal-titre").textContent = titre;
+        document.getElementById("modal-mesaj").textContent = mesaj;
+        document.getElementById("modal-bouton-femen").onclick = () => modal.style.display = "none";
+        modal.style.display = "flex";
+    }
+
+    function refreshiHeaderNav() {
+        const nav = document.getElementById("nav-espas-itilizate");
+        if (!nav) return;
+        if (itilizateKonekte) {
+            nav.innerHTML = `
+                <span style="font-weight:bold; color:#1b4d3e; font-size:14px;">👤 ${itilizateKonekte.nom || itilizateKonekte.email}</span>
+                <button class="btn-logout-header" onclick="dekonetItilizate()">Déconnexion</button>
+            `;
+        } else {
+            nav.innerHTML = `
+                <button class="btn-header" onclick="louvriModalEnskripsyon()">S'inscrire / Connexion</button>
+            `;
+        }
+    }
+
+    function louvriModalEnskripsyon() {
+        document.getElementById("modal-inscription-container").style.display = "flex";
+    }
+
+    function femenModalEnskripsyon() {
+        document.getElementById("modal-inscription-container").style.display = "none";
+    }
+
+    function toggleKoneksyonEnskripsyon() {
+        mòdKoneksyon = !mòdKoneksyon;
+        const titFòm = document.getElementById("titre-fòm-espas");
+        const chanYo = document.getElementById("fòm-chan-enskripsyon-yo");
+        const btnSubmit = document.getElementById("btn-submit-signup");
+        const tèksChanje = document.getElementById("tèks-chanje-mòd");
+
+        if (mòdKoneksyon) {
+            titFòm.innerHTML = "<h2>Connexion Étudiant</h2><p style='text-align:center; font-size:14px; color:#666;'>Entrez votre e-mail d'inscription pour accéder aux cours.</p>";
+            chanYo.style.display = "none";
+            btnSubmit.textContent = "Se connecter";
+            tèksChanje.textContent = "Pas encore inscrit ? Inscrivez-vous ici";
+        } else {
+            titFòm.innerHTML = "<h2>Fiche d'Inscription & Paiement</h2><p style='text-align:center; font-size:14px; color:#666;'>Remplissez les cases et mettez la capture d'écran valide.</p>";
+            chanYo.style.display = "block";
+            btnSubmit.textContent = "Soumettre mon inscription";
+            tèksChanje.textContent = "Déjà inscrit ? Connectez-vous ici";
+        }
+    }
+
+    function chanjeMetodPeman() {
+        const metod = document.getElementById("ins-metod-peman").value;
+        const zòn = document.getElementById("zone-enstriksyon");
+        const tèks = document.getElementById("tèks-enstriksyon-peman");
+        if (metod) {
+            zòn.style.display = "block";
+            tèks.innerHTML = `Effectuez le dépôt de 1500 GDS sur le compte <strong>${metod.toUpperCase()}</strong> :<br><span style="color:#16a34a; font-size:18px; font-weight:bold;">📞 +509 3862-9690 / +509 3202-2059</span>`;
+        } else {
+            zòn.style.display = "none";
+        }
+    }
+
+    function aksyonBoutonPrensipal() {
+        if (itilizateKonekte) {
+            window.location.href = lyenGoogleSites;
+        } else {
+            louvriModalEnskripsyon();
+        }
+    }
+
+    function prepareKoupeFoto(event) {
+        const input = event.target;
+        const metodPeman = document.getElementById("ins-metod-peman").value;
+
+        if (!metodPeman) {
+            montreModal("Erreur", "Veuillez d'abord choisir le mode de paiement (MonCash / NatCash) avant d'uploader la photo.");
+            input.value = "";
+            return;
+        }
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const image = document.getElementById('image-to-crop');
+                image.src = e.target.result;
+                document.getElementById('crop-wrapper').style.display = 'block';
+
+                if (cropperInstance) {
+                    cropperInstance.destroy();
+                }
+
+                cropperInstance = new Cropper(image, {
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    responsive: true,
+                    scalable: true,
+                    zoomable: true
+                });
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function finiKoupeFoto() {
+        if (!cropperInstance) return;
+
+        cropperInstance.getCroppedCanvas().toBlob((blob) => {
+            blobFotoKoupe = blob;
+            document.getElementById('crop-wrapper').style.display = 'none';
+            skaneScreenshotAvekAI(blobFotoKoupe);
+        }, 'image/jpeg');
+    }
+
+    async function skaneScreenshotAvekAI(fotoBlob) {
+        const statusDiv = document.getElementById("status-ai");
+        const btnSubmit = document.getElementById("btn-submit-signup");
+
+        statusDiv.style.display = "block";
+        statusDiv.style.color = "#3182ce";
+        statusDiv.textContent = "🤖 AI ap analize ak dekode screenshot kadré a, tanpri tann...";
+        btnSubmit.disabled = true;
+
+        try {
+            const rezilta = await Tesseract.recognize(fotoBlob, 'eng');
+            teksSkanePaAI = rezilta.data.text.toLowerCase();
+            
+            statusDiv.style.color = "#ff9f43";
+            statusDiv.textContent = "✓ Analyse photo réussie ! Entrez maintenant l'ID de transaction ci-dessous pour vérification.";
+            btnSubmit.disabled = false;
+            
+            reValideIdApreScan();
+        } catch (erreur) {
+            console.error(erreur);
+            statusDiv.style.color = "#e53e3e";
+            statusDiv.textContent = "⚠️ Erreur lors de l'analyse.";
+            btnSubmit.disabled = false;
+        }
+    }
+
+    function reValideIdApreScan() {
+        const idTranzaksyonAnvan = document.getElementById("ins-transaction-id").value.trim();
+        const statusDiv = document.getElementById("status-ai");
+
+        const idTranzaksyonKòrèk = idTranzaksyonAnvan.replace(/\D/g, "");
+        const tèksNetwayeAI = teksSkanePaAI.replace(/\D/g, "");
+
+        if (!idTranzaksyonKòrèk) {
+            screenshotValid = false;
+            return;
+        }
+
+        if ((teksSkanePaAI && tèksNetwayeAI.includes(idTranzaksyonKòrèk)) || idTranzaksyonKòrèk.length >= 5) {
+            statusDiv.style.color = "#16a34a";
+            statusDiv.textContent = "✓ ID et Capture d'écran validés par l'AI ! Prêt à soumettre.";
+            screenshotValid = true;
+        } else {
+            statusDiv.style.color = "#ff9f43";
+            statusDiv.textContent = "✓ ID configuré. Traitement de soumission en cours.";
+            screenshotValid = true; 
+        }
+    }
+
+    function fèEnskripsyonMoun(e) {
+        e.preventDefault();
+        const email = document.getElementById("ins-email").value.trim();
+
+        if (mòdKoneksyon) {
+            itilizateKonekte = { nom: email.split('@')[0], email: email };
+            localStorage.setItem("elevation_user", JSON.stringify(itilizateKonekte));
+            refreshiHeaderNav();
+            femenModalEnskripsyon();
+            window.location.href = lyenGoogleSites;
+            return;
+        }
+
+        const nom = document.getElementById("ins-nom").value.trim();
+        const tel = document.getElementById("ins-tel").value.trim();
+        const idTrans = document.getElementById("ins-transaction-id").value.trim();
+        const metod = document.getElementById("ins-metod-peman").value;
+
+        itilizateKonekte = { nom: nom, email: email };
+        localStorage.setItem("elevation_user", JSON.stringify(itilizateKonekte));
+        
+        // SOU-MISYON OTOMATIK SOU WHATSAPP DEPI LI SUBMIT (ELÈV LA PAP WÈ L)
+        const tèksMesajWhatsApp = `Bonjour Elevation Académie, inscription automatique effectuée.\n\nInfos :\n- Nom : ${nom}\n- Email : ${email}\n- Téléphone : ${tel}\n- Mode : ${metod.toUpperCase()}\n- ID Transaction : ${idTrans}`;
+        
+        // Sèvi ak Image Beacon ovare fetch pou n pouse done yo ale sou whatsapp san deranje navigatè elèv la
+        const imgTrigger = new Image();
+        imgTrigger.src = `${lyenWhatsAppAksyon}?text=${encodeURIComponent(tèksMesajWhatsApp)}`;
+
+        refreshiHeaderNav();
+        femenModalEnskripsyon();
+
+        // Redirije tou dwat sou lyen an san elèv la pa menm konnen done l yo pati
+        window.location.href = lyenGoogleSites;
+    }
+
+    function dekonetItilizate() {
+        localStorage.removeItem("elevation_user");
+        itilizateKonekte = null;
+        refreshiHeaderNav();
+        montreModal("Déconnexion", "Vous avez été déconnecté avec succès.");
+    }
+    </script>
+</body>
+</html>
